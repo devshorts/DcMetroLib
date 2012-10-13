@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using DcMetroLib.Common;
 using DcMetroLib.Data;
@@ -14,10 +15,14 @@ namespace DcMetroLib.MetroService
         private const string API_KEY = "u6ctd5b38t8nun52dbe7m9pc";
         private const string BaseUrl = "http://api.wmata.com/";
 
-        private List<StationInfo> _arrivalStations;
-        public static MetroManager Instance = new MetroManager();
+        private static Lazy<MetroManager> _instance = new Lazy<MetroManager>();
 
-        private  MetroManager()
+        public static MetroManager Instance
+        {
+            get { return _instance.Value; }
+        }
+
+        public  MetroManager()
         {
             
         }
@@ -25,10 +30,20 @@ namespace DcMetroLib.MetroService
         public void GetLineInformation(Action<List<LineInfo>> onComplete)
         {
             string url = GetApiKeySingle(BaseUrl + "Rail.svc/Lines");
-            GetXmlFromUrl(url, data =>
+            GetXmlFromUrl(url).ContinueWith(data =>
                                                     {
-                                                        var lines = MetroBuilder<LineInfo>.Build(data, "Lines");
+                                                        var lines = MetroBuilder<LineInfo>.Build(data.Result, "Lines");
                                                         onComplete(lines);
+                                                    });
+        }
+
+        public void GetRailIncidents(Action<List<IncidentData>> onComplete)
+        {
+            string url = GetApiKeySingle(BaseUrl + "Incidents.svc/Incidents");
+            GetXmlFromUrl(url).ContinueWith(data =>
+                                                    {
+                                                        var incidents = MetroBuilder<IncidentData>.Build(data.Result, "Incidents");
+                                                        onComplete(incidents);
                                                     });
         }
 
@@ -49,25 +64,21 @@ namespace DcMetroLib.MetroService
                 url = GetApiKeySingle(BaseUrl + "Rail.svc/Stations");
             }
 
-            GetXmlFromUrl(url, data =>
+            GetXmlFromUrl(url).ContinueWith(data =>
                                    {
-                                       var stations = MetroBuilder<StationInfo>.Build(data, "Stations");
+                                       var stations = MetroBuilder<StationInfo>.Build(data.Result, "Stations");
                                        onComplete(stations);
                                    });
         }
 
+
         public void GetArrivalTimesForStations(List<StationInfo> stations, Action<List<TrainArrivalTime>> onComplete)
         {
-            if (stations != null)
-            {
-                // cache the stations whos arrival times we want to know, if we get a null use the cached value to refresh
-                _arrivalStations = stations;
-            }
+            string url = GetApiKeySingle(BaseUrl + "StationPrediction.svc/GetPrediction/" + stations.FoldToCommaDelimitedList(s => s.Code));
 
-            string url = GetApiKeySingle(BaseUrl + "StationPrediction.svc/GetPrediction/" + _arrivalStations.FoldToCommaDelimitedList(s => s.Code));
-            GetXmlFromUrl(url, data =>
+            GetXmlFromUrl(url).ContinueWith(data =>
                                    {
-                                       var arrivalTimes = MetroBuilder<TrainArrivalTime>.Build(data, "Trains");
+                                       var arrivalTimes = MetroBuilder<TrainArrivalTime>.Build(data.Result, "Trains");
                                        onComplete(arrivalTimes);
                                    });
         }
@@ -75,15 +86,18 @@ namespace DcMetroLib.MetroService
         public void UpdateEntrances(double lat, double lon, int radiusInMeters, Action<List<StationEntrance>> onComplete)
         {
             string url = GetApiKeyMultiple(BaseUrl + String.Format("Rail.svc/StationEntrances?lat={0}&lon={1}&radius={2}", lat, lon, radiusInMeters));
-            GetXmlFromUrl(url, data =>
+
+            GetXmlFromUrl(url).ContinueWith(data =>
                                    {
-                                       var entrances = MetroBuilder<StationEntrance>.Build(data, "Entrances");
+                                       var entrances = MetroBuilder<StationEntrance>.Build(data.Result, "Entrances");
                                        onComplete(entrances);
                                    });
         }
 
-        private static void GetXmlFromUrl(string url, Action<XDocument> callback)
+        private static Task<XDocument> GetXmlFromUrl(string url)
         {
+            var taskCompletionSource = new TaskCompletionSource<XDocument>();
+
             var client = new WebClient();
 
             client.OpenReadCompleted += (sender, e) =>
@@ -93,10 +107,13 @@ namespace DcMetroLib.MetroService
                                                 {
                                                     xdoc = XDocument.Load(str);
                                                 }
-                                                callback(xdoc);
+                                                
+                                                taskCompletionSource.SetResult(xdoc);
                                             };
 
             client.OpenReadAsync(new Uri(url, UriKind.Absolute));
+
+            return taskCompletionSource.Task;
         }
 
         /// <summary>
