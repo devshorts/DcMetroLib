@@ -13,9 +13,9 @@ namespace DcMetroLib.tests
         [Test]
         public void TestStations()
         {
-            MetroManager.Instance.GetStationsByLine(LineCodeType.Green, (stations) =>
+            MetroManager.Instance.GetStationsByLine(LineCodeType.Green).ContinueWith((stations) =>
                                                                          {
-                                                                             Assert.IsNotEmpty(stations);
+                                                                             Assert.IsNotEmpty(stations.Result);
                                                                              mutex.Set();
                                                                          });
 
@@ -25,9 +25,9 @@ namespace DcMetroLib.tests
         [Test]
         public void TestLines()
         {
-            MetroManager.Instance.GetLineInformation((lines) =>
+            MetroManager.Instance.GetLineInformation().ContinueWith((lines) =>
                                                          {
-                                                             Assert.IsNotEmpty(lines);
+                                                             Assert.IsNotEmpty(lines.Result);
                                                              mutex.Set();
                                                          });
 
@@ -37,10 +37,10 @@ namespace DcMetroLib.tests
         [Test]
         public void TestArrivalTimes()
         {
-            MetroManager.Instance.GetStationsByLine(LineCodeType.Green, (stations) =>
-            MetroManager.Instance.GetArrivalTimesForStations (stations, (arrivals) =>
+            MetroManager.Instance.GetStationsByLine(LineCodeType.Green).ContinueWith((stations) =>
+            MetroManager.Instance.GetArrivalTimesForStations (stations.Result).ContinueWith((arrivals) =>
                                 {
-                                    Assert.IsNotEmpty(arrivals);
+                                    Assert.IsNotEmpty(arrivals.Result);
                                     mutex.Set();
                                 }));
             
@@ -51,9 +51,9 @@ namespace DcMetroLib.tests
         [Test]
         public void TestRailIncidents()
         {
-            MetroManager.Instance.GetRailIncidents((incidents) =>
+            MetroManager.Instance.GetRailIncidents().ContinueWith((incidents) =>
             {
-                Assert.IsNotNull(incidents);
+                Assert.IsNotNull(incidents.Result);
                 mutex.Set();
             });
 

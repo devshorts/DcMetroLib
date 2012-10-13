@@ -27,27 +27,39 @@ namespace DcMetroLib.MetroService
             
         }
 
-        public void GetLineInformation(Action<List<LineInfo>> onComplete)
+        public Task<List<LineInfo>> GetLineInformation()
         {
             string url = GetApiKeySingle(BaseUrl + "Rail.svc/Lines");
+
+            var taskSource = new TaskCompletionSource<List<LineInfo>>();
+
             GetXmlFromUrl(url).ContinueWith(data =>
                                                     {
                                                         var lines = MetroBuilder<LineInfo>.Build(data.Result, "Lines");
-                                                        onComplete(lines);
+                                                        
+                                                        taskSource.SetResult(lines);
                                                     });
+
+            return taskSource.Task;
         }
 
-        public void GetRailIncidents(Action<List<IncidentData>> onComplete)
+        public Task<List<IncidentData>> GetRailIncidents()
         {
             string url = GetApiKeySingle(BaseUrl + "Incidents.svc/Incidents");
+
+            var taskSource = new TaskCompletionSource<List<IncidentData>>();
+
             GetXmlFromUrl(url).ContinueWith(data =>
                                                     {
                                                         var incidents = MetroBuilder<IncidentData>.Build(data.Result, "Incidents");
-                                                        onComplete(incidents);
+                                                        
+                                                        taskSource.SetResult(incidents);
                                                     });
+
+            return taskSource.Task;
         }
 
-        public void GetStationsByLine(LineCodeType lineCode, Action<List<StationInfo>> onComplete)
+        public Task<List<StationInfo>> GetStationsByLine(LineCodeType lineCode)
         {
             string url;
             
@@ -64,34 +76,47 @@ namespace DcMetroLib.MetroService
                 url = GetApiKeySingle(BaseUrl + "Rail.svc/Stations");
             }
 
+            var taskSource = new TaskCompletionSource<List<StationInfo>>();
+
             GetXmlFromUrl(url).ContinueWith(data =>
                                    {
                                        var stations = MetroBuilder<StationInfo>.Build(data.Result, "Stations");
-                                       onComplete(stations);
+                                       
+                                       taskSource.SetResult(stations);
                                    });
+
+            return taskSource.Task;
         }
 
 
-        public void GetArrivalTimesForStations(List<StationInfo> stations, Action<List<TrainArrivalTime>> onComplete)
+        public Task<List<TrainArrivalTime>> GetArrivalTimesForStations(List<StationInfo> stations)
         {
             string url = GetApiKeySingle(BaseUrl + "StationPrediction.svc/GetPrediction/" + stations.FoldToCommaDelimitedList(s => s.Code));
 
+            var taskSource = new TaskCompletionSource<List<TrainArrivalTime>>();
             GetXmlFromUrl(url).ContinueWith(data =>
                                    {
                                        var arrivalTimes = MetroBuilder<TrainArrivalTime>.Build(data.Result, "Trains");
-                                       onComplete(arrivalTimes);
+                                       
+                                       taskSource.SetResult(arrivalTimes);
                                    });
+
+            return taskSource.Task;
         }
 
-        public void UpdateEntrances(double lat, double lon, int radiusInMeters, Action<List<StationEntrance>> onComplete)
+        public Task<List<StationEntrance>> UpdateEntrances(double lat, double lon, int radiusInMeters)
         {
             string url = GetApiKeyMultiple(BaseUrl + String.Format("Rail.svc/StationEntrances?lat={0}&lon={1}&radius={2}", lat, lon, radiusInMeters));
 
+            var taskSource = new TaskCompletionSource<List<StationEntrance>>();
             GetXmlFromUrl(url).ContinueWith(data =>
                                    {
                                        var entrances = MetroBuilder<StationEntrance>.Build(data.Result, "Entrances");
-                                       onComplete(entrances);
+
+                                       taskSource.SetResult(entrances);
                                    });
+
+            return taskSource.Task;
         }
 
         private static Task<XDocument> GetXmlFromUrl(string url)
