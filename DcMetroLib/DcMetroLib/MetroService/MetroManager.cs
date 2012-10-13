@@ -12,6 +12,8 @@ namespace DcMetroLib.MetroService
 {
     public class MetroManager
     {
+        #region Data
+
         private const string BaseUrl = "http://api.wmata.com/";
 
         private static Lazy<MetroManager> _instance = new Lazy<MetroManager>();
@@ -26,6 +28,10 @@ namespace DcMetroLib.MetroService
             
         }
 
+        #endregion
+
+        #region Api Key
+
         private String ApiKey { get; set; }
 
         public void RegisterApiKey(string key)
@@ -33,94 +39,72 @@ namespace DcMetroLib.MetroService
             ApiKey = key;
         }
 
+        #endregion
+
+        #region Outbound Calls
+
         public Task<List<LineInfo>> GetLineInformation()
         {
-            string url = GetApiKeySingle(BaseUrl + "Rail.svc/Lines");
-
-            var taskSource = new TaskCompletionSource<List<LineInfo>>();
-
-            GetXmlFromUrl(url).ContinueWith(data =>
-                                                    {
-                                                        var lines = MetroBuilder<LineInfo>.Build(data.Result, "Lines");
-                                                        
-                                                        taskSource.SetResult(lines);
-                                                    });
-
-            return taskSource.Task;
+            return GetList<LineInfo>("Rail.svc", "Lines");
         }
 
-        public Task<List<IncidentData>> GetRailIncidents()
+        public Task<List<RailIncidentData>> GetRailIncidents()
         {
-            string url = GetApiKeySingle(BaseUrl + "Incidents.svc/Incidents");
-
-            var taskSource = new TaskCompletionSource<List<IncidentData>>();
-
-            GetXmlFromUrl(url).ContinueWith(data =>
-                                                    {
-                                                        var incidents = MetroBuilder<IncidentData>.Build(data.Result, "Incidents");
-                                                        
-                                                        taskSource.SetResult(incidents);
-                                                    });
-
-            return taskSource.Task;
+            return GetList<RailIncidentData>("Incidents.svc", "Incidents");
         }
 
         public Task<List<StationInfo>> GetStationsByLine(LineCodeType lineCode)
         {
             string url;
-            
+
+            bool single = true;
+
             // get stations for a specific line
             if(lineCode != LineCodeType.All)
             {
                 string lineCodeString = "?LineCode=" + lineCode.ToCode();
-                url = GetApiKeyMultiple(BaseUrl + "Rail.svc/Stations" + lineCodeString);
+                url = "Rail.svc/Stations" + lineCodeString;
+                single = false;
             }
 
             // list all stations
             else
             {
-                url = GetApiKeySingle(BaseUrl + "Rail.svc/Stations");
+                url = "Rail.svc/Stations";
             }
 
-            var taskSource = new TaskCompletionSource<List<StationInfo>>();
+            return GetList<StationInfo>(url, "Stations", single);
 
-            GetXmlFromUrl(url).ContinueWith(data =>
-                                   {
-                                       var stations = MetroBuilder<StationInfo>.Build(data.Result, "Stations");
-                                       
-                                       taskSource.SetResult(stations);
-                                   });
-
-            return taskSource.Task;
         }
-
 
         public Task<List<TrainArrivalTime>> GetArrivalTimesForStations(List<StationInfo> stations)
         {
-            string url = GetApiKeySingle(BaseUrl + "StationPrediction.svc/GetPrediction/" + stations.FoldToCommaDelimitedList(s => s.Code));
-
-            var taskSource = new TaskCompletionSource<List<TrainArrivalTime>>();
-            GetXmlFromUrl(url).ContinueWith(data =>
-                                   {
-                                       var arrivalTimes = MetroBuilder<TrainArrivalTime>.Build(data.Result, "Trains");
-                                       
-                                       taskSource.SetResult(arrivalTimes);
-                                   });
-
-            return taskSource.Task;
+            return GetList<TrainArrivalTime>("StationPrediction.svc/GetPrediction/" + stations.FoldToCommaDelimitedList(s => s.Code), "Trains");
         }
 
         public Task<List<StationEntrance>> UpdateEntrances(double lat, double lon, int radiusInMeters)
         {
-            string url = GetApiKeyMultiple(BaseUrl + String.Format("Rail.svc/StationEntrances?lat={0}&lon={1}&radius={2}", lat, lon, radiusInMeters));
+            return GetList<StationEntrance>(String.Format("Rail.svc/StationEntrances?lat={0}&lon={1}&radius={2}", lat, lon, radiusInMeters), "Entrances", false);
+        }
 
-            var taskSource = new TaskCompletionSource<List<StationEntrance>>();
+        #endregion
+
+        #region Helpers
+
+        private Task<List<T>> GetList<T>(string svc, string term, bool single = true) where T : class, IMetroData
+        {
+            var args = BaseUrl + svc;
+
+            string url = single ? GetApiKeySingle(args) : GetApiKeyMultiple(args);
+
+            var taskSource = new TaskCompletionSource<List<T>>();
+
             GetXmlFromUrl(url).ContinueWith(data =>
-                                   {
-                                       var entrances = MetroBuilder<StationEntrance>.Build(data.Result, "Entrances");
+            {
+                var incidents = MetroBuilder<T>.Build(data.Result, term);
 
-                                       taskSource.SetResult(entrances);
-                                   });
+                taskSource.SetResult(incidents);
+            });
 
             return taskSource.Task;
         }
@@ -172,6 +156,8 @@ namespace DcMetroLib.MetroService
         {
             get { return "api_key=" + ApiKey; }
         }
+
+        #endregion
     }
 
     internal static class MetroBuilder<T> where T : class, IMetroData

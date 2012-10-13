@@ -6,7 +6,7 @@ using DcMetroLib.Common;
 
 namespace DcMetroLib.Data
 {
-    public class IncidentData : XmlDecoder
+    public class RailIncidentData : XmlDecoder
     {
         /*
          * <DateUpdated>2010-07-29T14:21:18</DateUpdated>
