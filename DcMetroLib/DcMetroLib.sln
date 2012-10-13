@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DcMetroLib", "DcMetroLib\DcMetroLib.csproj", "{4BCA5A17-7076-4343-8517-9930B9F904C6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DcMetroLib.Tests", "DcMetroLib.tests\DcMetroLib.Tests.csproj", "{6E8B4F4E-7877-4F8B-A30F-EC8FC466CE17}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4BCA5A17-7076-4343-8517-9930B9F904C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BCA5A17-7076-4343-8517-9930B9F904C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BCA5A17-7076-4343-8517-9930B9F904C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BCA5A17-7076-4343-8517-9930B9F904C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E8B4F4E-7877-4F8B-A30F-EC8FC466CE17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E8B4F4E-7877-4F8B-A30F-EC8FC466CE17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E8B4F4E-7877-4F8B-A30F-EC8FC466CE17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E8B4F4E-7877-4F8B-A30F-EC8FC466CE17}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
