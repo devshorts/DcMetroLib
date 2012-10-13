@@ -12,7 +12,6 @@ namespace DcMetroLib.MetroService
 {
     public class MetroManager
     {
-        private const string API_KEY = "u6ctd5b38t8nun52dbe7m9pc";
         private const string BaseUrl = "http://api.wmata.com/";
 
         private static Lazy<MetroManager> _instance = new Lazy<MetroManager>();
@@ -25,6 +24,13 @@ namespace DcMetroLib.MetroService
         public  MetroManager()
         {
             
+        }
+
+        private String ApiKey { get; set; }
+
+        public void RegisterApiKey(string key)
+        {
+            ApiKey = key;
         }
 
         public Task<List<LineInfo>> GetLineInformation()
@@ -148,8 +154,8 @@ namespace DcMetroLib.MetroService
         /// <returns></returns>
         private string GetApiKeySingle(string s)
         {
-            
-            return s + "?" + ApiKey;
+
+            return s + "?" + ApiKeyUrlItem;
         }
 
         /// <summary>
@@ -159,12 +165,12 @@ namespace DcMetroLib.MetroService
         /// <returns></returns>
         private string GetApiKeyMultiple(string s)
         {
-            return s + "&" + ApiKey;
+            return s + "&" + ApiKeyUrlItem;
         }
 
-        private string ApiKey
+        private string ApiKeyUrlItem
         {
-            get { return "api_key=" + API_KEY; }
+            get { return "api_key=" + ApiKey; }
         }
     }
 

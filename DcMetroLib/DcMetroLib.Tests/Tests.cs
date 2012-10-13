@@ -10,6 +10,12 @@ namespace DcMetroLib.tests
     {
         private AutoResetEvent mutex = new AutoResetEvent(false);
 
+        [TestFixtureSetUp]
+        public void Setup()
+        {
+            MetroManager.Instance.RegisterApiKey("u6ctd5b38t8nun52dbe7m9pc");
+        }
+
         [Test]
         public void TestStations()
         {
