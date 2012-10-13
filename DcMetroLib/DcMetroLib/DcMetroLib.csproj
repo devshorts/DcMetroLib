@@ -41,7 +41,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\LinqExtensions.cs" />
-    <Compile Include="Data\IncidentData.cs" />
+    <Compile Include="Data\ElevatorIncidentData.cs" />
+    <Compile Include="Data\RailIncidentData.cs" />
     <Compile Include="Data\LineCodeType.cs" />
     <Compile Include="Data\MetroPathItem.cs" />
     <Compile Include="Interfaces\IMetroData.cs" />

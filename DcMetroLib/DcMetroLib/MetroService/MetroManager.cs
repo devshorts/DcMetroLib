@@ -45,12 +45,12 @@ namespace DcMetroLib.MetroService
 
         public Task<List<LineInfo>> GetLineInformation()
         {
-            return GetList<LineInfo>("Rail.svc", "Lines");
+            return GetList<LineInfo>("Rail.svc/Lines", "Lines");
         }
 
         public Task<List<RailIncidentData>> GetRailIncidents()
         {
-            return GetList<RailIncidentData>("Incidents.svc", "Incidents");
+            return GetList<RailIncidentData>("Incidents.svc/Incidents", "Incidents");
         }
 
         public Task<List<StationInfo>> GetStationsByLine(LineCodeType lineCode)
