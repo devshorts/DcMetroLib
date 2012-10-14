@@ -4,7 +4,6 @@ using System.Reflection;
 using System.Xml.Linq;
 using DcMetroLib.Data;
 using DcMetroLib.Interfaces;
-using DcMetroLib.MetroService;
 
 namespace DcMetroLib.Common
 {
@@ -16,14 +15,14 @@ namespace DcMetroLib.Common
 
         public object Decode(XElement elem, XNamespace df)
         {
-            // get all the public properties
-            var publicProperties = GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance |
+            // get all the properties
+            var properties = GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | 
                                                            BindingFlags.OptionalParamBinding |
                                                            BindingFlags.CreateInstance)
                 .Where(prop => prop.GetCustomAttributes(typeof (MetroElement), false) != null);
 
             // methods tagged with MetroElement
-            var methods = publicProperties;
+            var methods = properties;
 
             foreach(PropertyInfo method in methods)
             {
@@ -36,15 +35,25 @@ namespace DcMetroLib.Common
 
                 var value = elem.Element(df + xmlElementName).Value;
 
-                method.SetValue(this, Convert.ChangeType(value, method.PropertyType, null), null);
+                method.SetValue(this, Convert.ChangeType(value, method.PropertyType, null), null);    
             }
+
+            Process();
 
             return this;
         }
 
+        /// <summary>
+        /// Each object can post process its data
+        /// </summary>
+        protected virtual void Process()
+        {
+            // for overriding to process raw strings into typed objects
+        }
+
         private string MappedNameForMethod(PropertyInfo method)
         {
-            var metroElementTag = method.GetCustomAttributes(typeof (MetroElement), false).FirstOrDefault() as MetroElement;
+            var metroElementTag = GetMetroElement(method);
 
             if(metroElementTag != null)
             {
@@ -56,6 +65,11 @@ namespace DcMetroLib.Common
                 return xmlName;
             }
             return null;
+        }
+
+        private MetroElement GetMetroElement(PropertyInfo method)
+        {
+            return method.GetCustomAttributes(typeof (MetroElement), false).FirstOrDefault() as MetroElement;
         }
     }
 }

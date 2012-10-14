@@ -18,10 +18,17 @@ namespace DcMetroLib.MetroService
         [MetroElement]
         public string InternalDestination2 { get; set; }
 
-        [MetroElement]
-        public string LineCode { get; set; }
+        [MetroElement(XmlName = "LineCode")]
+        private string LineCodeRaw { get; set; }
+
+        public LineCodeType LineCode { get; set; }
 
         [MetroElement]
         public string StartStationCode { get; set; }
+
+        protected override void Process()
+        {
+            LineCode = LineCodeUtil.FromString(LineCodeRaw);
+        }
     }
 }

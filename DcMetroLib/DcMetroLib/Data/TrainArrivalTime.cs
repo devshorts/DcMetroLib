@@ -4,7 +4,7 @@ using DcMetroLib.Common;
 
 namespace DcMetroLib.Data
 {
-    public class TrainArrivalTime :XmlDecoder
+    public class TrainArrivalTime : XmlDecoder
     {
         [MetroElement]
         public String Car { get; set; }
@@ -21,8 +21,10 @@ namespace DcMetroLib.Data
         [MetroElement]
         public String Group { get; set; }
 
-        [MetroElement]
-        public String Line { get; set; }
+        [MetroElement(XmlName = "Line")]
+        public String LineRaw { get; set; }
+
+        public LineCodeType Line { get; set; }
 
         [MetroElement]
         public String LocationCode { get; set; }
@@ -32,5 +34,10 @@ namespace DcMetroLib.Data
 
         [MetroElement]
         public String Min { get; set; }
+
+        protected override void Process()
+        {
+            Line = LineCodeUtil.FromString(LineRaw);
+        }
     }
 }

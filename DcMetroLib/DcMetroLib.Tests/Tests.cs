@@ -50,7 +50,6 @@ namespace DcMetroLib.tests
                                     mutex.Set();
                                 }));
             
-
             mutex.WaitOne();
         }
 

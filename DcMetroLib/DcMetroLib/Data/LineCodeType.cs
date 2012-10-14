@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using DcMetroLib.Common;
 
 namespace DcMetroLib.Data
 {
@@ -13,6 +13,28 @@ namespace DcMetroLib.Data
         Orange,
         Green,
         All
+    }
+
+    public static class LineCodeUtil
+    {
+        public static LineCodeType FromString(string s)
+        {
+            switch (s)
+            {
+                case "RD": return LineCodeType.Red;
+                case "BL" : return LineCodeType.Blue;
+                case "YL": return LineCodeType.Yellow;
+                case "OR": return LineCodeType.Orange;
+                case "GR": return LineCodeType.Green;
+            }
+
+            return LineCodeType.All;
+        }
+
+        public static List<LineCodeType> FromDelimitedString(string source, string delim)
+        {
+            return StringUtil.Split(source, ";").ToList().ConvertAll(FromString);
+        }
     }
 
     public static class LineCodeExtensions
