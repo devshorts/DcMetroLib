@@ -53,9 +53,25 @@ namespace DcMetroLib.MetroService
             return GetList<RailIncidentData>("Incidents.svc/Incidents", "Incidents");
         }
 
-        public Task<StationInfo> GetStationInfo(String stationCode)
+        public Task<StationInfo> GetStationInfo(string stationCode)
         {
-            return Get<StationInfo>("Rail.svc/StationInfo?StationCode=" + stationCode);
+            return GetStationInfo(new StationInfo { Code = stationCode });
+        }
+
+        public Task<StationInfo> GetStationInfo(StationInfo stationCode)
+        {
+            return Get<StationInfo>("Rail.svc/StationInfo?StationCode=" + stationCode.Code);
+        }
+
+
+        public Task<List<MetroPathItem>> GetStationsBetween(String fromCode, String toCode)
+        {
+            return GetStationsBetween(new StationInfo {Code = fromCode}, new StationInfo {Code = toCode});
+        }
+
+        public Task<List<MetroPathItem>> GetStationsBetween(StationInfo from, StationInfo to)
+        {
+            return GetList<MetroPathItem>(String.Format("Rail.svc/Path?FromStationCode={0}&ToStationCode={1}", from.Code, to.Code), "Path");
         }
 
         public Task<List<StationInfo>> GetStationsByLine(LineCodeType lineCode)

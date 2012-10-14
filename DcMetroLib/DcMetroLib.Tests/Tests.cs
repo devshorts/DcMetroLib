@@ -88,5 +88,18 @@ namespace DcMetroLib.tests
 
             mutex.WaitOne();
         }
+
+        [Test]
+        public void GetStationsBetween()
+        {
+            MetroManager.Instance.GetStationsBetween("A10", "A12").ContinueWith((stationList) =>
+            {
+                Assert.IsNotEmpty(stationList.Result);
+                Assert.IsTrue(stationList.Result.Count == 3);
+                mutex.Set();
+            });
+
+            mutex.WaitOne();
+        }
     }
 }
