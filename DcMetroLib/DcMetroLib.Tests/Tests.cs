@@ -64,5 +64,29 @@ namespace DcMetroLib.tests
 
             mutex.WaitOne();
         }
+
+        [Test]
+        public void GetNearestStations()
+        {
+            MetroManager.Instance.GetNearestEntrances(38.878586, -76.989626, 500).ContinueWith((stationEntrances) =>
+            {
+                Assert.IsNotEmpty(stationEntrances.Result);
+                mutex.Set();
+            });
+
+            mutex.WaitOne();
+        }
+
+        [Test]
+        public void GetStationInfo()
+        {
+            MetroManager.Instance.GetStationInfo("A10").ContinueWith((stationInfo) =>
+            {
+                Assert.IsNotNull(stationInfo.Result);
+                mutex.Set();
+            });
+
+            mutex.WaitOne();
+        }
     }
 }

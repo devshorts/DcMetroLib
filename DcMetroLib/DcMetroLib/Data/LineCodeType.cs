@@ -12,7 +12,8 @@ namespace DcMetroLib.Data
         Yellow,
         Orange,
         Green,
-        All
+        All,
+        None
     }
 
     public static class LineCodeUtil
@@ -28,7 +29,7 @@ namespace DcMetroLib.Data
                 case "GR": return LineCodeType.Green;
             }
 
-            return LineCodeType.All;
+            return LineCodeType.None;
         }
 
         public static List<LineCodeType> FromDelimitedString(string source, string delim)
