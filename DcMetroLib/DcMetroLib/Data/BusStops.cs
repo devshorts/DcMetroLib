@@ -9,20 +9,15 @@ namespace DcMetroLib.Data
     [Serializable]
     public class BusStops : MetroDataItemBase
     {
-        [XmlElement]
         public Double Lat { get; set; }
 
-        [XmlElement]
         public Double Lon { get; set; }
 
-        [XmlElement]
         public String Name { get; set; }
 
-        [XmlArray("Routes")]
-        [XmlArrayItem(typeof(String))]
+        [XmlArrayItem(typeof(String), Namespace = "http://schemas.microsoft.com/2003/10/Serialization/Arrays")]
         public List<String> Routes { get; set; }
 
-        [XmlElement]
         public int StopID { get; set; }
     }
 }
