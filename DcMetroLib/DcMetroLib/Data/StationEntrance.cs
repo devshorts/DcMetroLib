@@ -1,30 +1,33 @@
 ﻿using System;
 using System.Xml.Linq;
+using System.Xml.Serialization;
 using DcMetroLib.Common;
+using DcMetroLib.Data.Containers;
 
 namespace DcMetroLib.Data
 {
-    public class StationEntrance : XmlDecoder
+    [Serializable]
+    public class StationEntrance : MetroDataItemBase
     {
-        [MetroElement]
+        [XmlElement]
         public string Description { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public string ID { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public Double Lat { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public Double Lon { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public string Name { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public string StationCode1 { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public string StationCode2 { get; set; }
     }
 }

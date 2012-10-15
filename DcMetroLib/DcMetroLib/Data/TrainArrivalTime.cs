@@ -1,41 +1,45 @@
 ﻿using System;
 using System.Xml.Linq;
+using System.Xml.Serialization;
 using DcMetroLib.Common;
+using DcMetroLib.Data.Containers;
 
 namespace DcMetroLib.Data
 {
-    public class TrainArrivalTime : XmlDecoder
+    [Serializable]
+    public class TrainArrivalTime : MetroDataItemBase
     {
-        [MetroElement]
+        [XmlElement]
         public String Car { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public String Destination { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public String DestinationCode { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public String DestinationName { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public String Group { get; set; }
 
-        [MetroElement(XmlName = "Line")]
+        [XmlElement("Line")]
         public String LineRaw { get; set; }
 
+        [XmlIgnore]
         public LineCodeType Line { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public String LocationCode { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public String LocationName { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public String Min { get; set; }
 
-        protected override void Process()
+        internal override void Process()
         {
             Line = LineCodeUtil.FromString(LineRaw);
         }

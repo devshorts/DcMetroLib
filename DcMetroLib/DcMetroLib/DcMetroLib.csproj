@@ -42,7 +42,19 @@
   <ItemGroup>
     <Compile Include="Common\CollectionUtil.cs" />
     <Compile Include="Common\LinqExtensions.cs" />
+    <Compile Include="Common\SerializationUtil.cs" />
     <Compile Include="Common\StringUtil.cs" />
+    <Compile Include="Data\BusRoute.cs" />
+    <Compile Include="Data\BusStops.cs" />
+    <Compile Include="Data\Containers\BusStopsContainer.cs" />
+    <Compile Include="Data\Containers\ElevatorIncidentsContainer.cs" />
+    <Compile Include="Data\Containers\RailIncidentsContainer.cs" />
+    <Compile Include="Data\Containers\LinesContainer.cs" />
+    <Compile Include="Data\Containers\BusRoutesContainer.cs" />
+    <Compile Include="Data\Containers\StationEntranceContainer.cs" />
+    <Compile Include="Data\Containers\StationPathContainer.cs" />
+    <Compile Include="Data\Containers\StationsContainer.cs" />
+    <Compile Include="Data\Containers\TrainArrivalContainer.cs" />
     <Compile Include="Data\ElevatorIncidentData.cs" />
     <Compile Include="Data\RailIncidentData.cs" />
     <Compile Include="Data\LineCodeType.cs" />
@@ -54,7 +66,7 @@
     <Compile Include="Data\StationEntrance.cs" />
     <Compile Include="Data\StationInfo.cs" />
     <Compile Include="Data\TrainArrivalTime.cs" />
-    <Compile Include="Common\XmlDecoder.cs" />
+    <Compile Include="Data\MetroDataItemBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

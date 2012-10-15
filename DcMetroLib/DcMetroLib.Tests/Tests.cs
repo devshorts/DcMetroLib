@@ -21,7 +21,7 @@ namespace DcMetroLib.tests
         {
             MetroManager.Instance.GetStationsByLine(LineCodeType.Green).ContinueWith((stations) =>
                                                                          {
-                                                                             Assert.IsNotEmpty(stations.Result);
+                                                                             Assert.IsNotEmpty(stations.Result.Stations);
                                                                              mutex.Set();
                                                                          });
 
@@ -33,7 +33,7 @@ namespace DcMetroLib.tests
         {
             MetroManager.Instance.GetLineInformation().ContinueWith((lines) =>
                                                          {
-                                                             Assert.IsNotEmpty(lines.Result);
+                                                             Assert.IsNotEmpty(lines.Result.Lines);
                                                              mutex.Set();
                                                          });
 
@@ -44,9 +44,9 @@ namespace DcMetroLib.tests
         public void TestArrivalTimes()
         {
             MetroManager.Instance.GetStationsByLine(LineCodeType.Green).ContinueWith((stations) =>
-            MetroManager.Instance.GetArrivalTimesForStations (stations.Result).ContinueWith((arrivals) =>
+            MetroManager.Instance.GetArrivalTimesForStations (stations.Result.Stations).ContinueWith((arrivals) =>
                                 {
-                                    Assert.IsNotEmpty(arrivals.Result);
+                                    Assert.IsNotEmpty(arrivals.Result.TrainArrivalTimes);
                                     mutex.Set();
                                 }));
             
@@ -58,7 +58,7 @@ namespace DcMetroLib.tests
         {
             MetroManager.Instance.GetRailIncidents().ContinueWith((incidents) =>
             {
-                Assert.IsNotNull(incidents.Result);
+                Assert.IsNotNull(incidents.Result.RailIncidents);
                 mutex.Set();
             });
 
@@ -66,11 +66,24 @@ namespace DcMetroLib.tests
         }
 
         [Test]
+        public void TestElevatorIncidents()
+        {
+            MetroManager.Instance.GetElevatorIncidents("A10").ContinueWith((incidents) =>
+            {
+                Assert.IsNotNull(incidents.Result.ElevatorIncidents);
+                mutex.Set();
+            });
+
+            mutex.WaitOne();
+        }
+
+
+        [Test]
         public void GetNearestStations()
         {
             MetroManager.Instance.GetNearestEntrances(38.878586, -76.989626, 500).ContinueWith((stationEntrances) =>
             {
-                Assert.IsNotEmpty(stationEntrances.Result);
+                Assert.IsNotEmpty(stationEntrances.Result.StationEntrances);
                 mutex.Set();
             });
 
@@ -94,8 +107,32 @@ namespace DcMetroLib.tests
         {
             MetroManager.Instance.GetStationsBetween("A10", "A12").ContinueWith((stationList) =>
             {
-                Assert.IsNotEmpty(stationList.Result);
-                Assert.IsTrue(stationList.Result.Count == 3);
+                Assert.IsNotEmpty(stationList.Result.MetroPathItems);
+                Assert.IsTrue(stationList.Result.MetroPathItems.Count == 3);
+                mutex.Set();
+            });
+
+            mutex.WaitOne();
+        }
+
+        [Test]
+        public void GetBusRoutes()
+        {
+            MetroManager.Instance.GetBusRoutes().ContinueWith((routes) =>
+            {
+                Assert.IsNotEmpty(routes.Result.BusRoutes);
+                mutex.Set();
+            });
+
+            mutex.WaitOne();
+        }
+
+        [Test]
+        public void GetBusStops()
+        {
+            MetroManager.Instance.GetBusStops(38.878586, -76.989626, 500).ContinueWith((stops) =>
+            {
+                Assert.IsNotEmpty(stops.Result.BusStops);
                 mutex.Set();
             });
 

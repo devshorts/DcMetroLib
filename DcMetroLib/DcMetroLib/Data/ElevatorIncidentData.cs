@@ -1,47 +1,47 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Xml.Serialization;
 using DcMetroLib.Common;
+using DcMetroLib.Data.Containers;
 
 namespace DcMetroLib.Data
 {
-    public class ElevatorIncidentData : XmlDecoder
+    [Serializable]
+    public class ElevatorIncidentData : MetroDataItemBase
     {
-        [MetroElement(XmlName = "DateOutOfServ")]
+        [XmlElement("DateOutOfServ")]
         public DateTime DateWhenOutOfService { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public DateTime DateUpdated { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public int DisplayOrder { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public String LocationDescription { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public String StationCode { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public String StationName { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public int SymptomCode { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public String SymptomDescription { get; set; }
 
-        [MetroElement(XmlName = "TimeOutOfService")]
+        [XmlElement("TimeOutOfService")]
         public int TimeOutOfServiceMinutes { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public string UnitName { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public String UnitStatus { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public string UnitType { get; set; }
     }
 }

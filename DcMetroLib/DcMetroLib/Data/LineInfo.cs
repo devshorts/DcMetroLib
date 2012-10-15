@@ -1,32 +1,34 @@
-﻿using System.Xml.Linq;
+﻿using System;
+using System.Xml.Serialization;
 using DcMetroLib.Common;
-using DcMetroLib.Data;
 
-namespace DcMetroLib.MetroService
+namespace DcMetroLib.Data
 {
-    public class LineInfo : XmlDecoder
+    [Serializable]
+    public class LineInfo : MetroDataItemBase
     {
-        [MetroElement]
+        [XmlElement]
         public string DisplayName { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public string EndStationCode { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public string InternalDestination1 { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public string InternalDestination2 { get; set; }
 
-        [MetroElement(XmlName = "LineCode")]
-        private string LineCodeRaw { get; set; }
+        [XmlElement("LineCode")]
+        public string LineCodeRaw { get; set; }
 
+        [XmlIgnore]
         public LineCodeType LineCode { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public string StartStationCode { get; set; }
 
-        protected override void Process()
+        internal override void Process()
         {
             LineCode = LineCodeUtil.FromString(LineCodeRaw);
         }

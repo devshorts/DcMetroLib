@@ -1,22 +1,26 @@
 ﻿using System;
+using System.Xml.Serialization;
 using DcMetroLib.Common;
+using DcMetroLib.Data.Containers;
 
 namespace DcMetroLib.Data
 {
-    public class MetroPathItem : XmlDecoder
+    [Serializable]
+    public class MetroPathItem : MetroDataItemBase
     {
-        [MetroElement(XmlName = "DistanceToPrev")]
+        [XmlElement("DistanceToPrev")]
         public int DistanceFromPreviousStationFeet { get; set; }
 
-        [MetroElement(XmlName = "LineCode")]
-        private String LineCodeRaw { get; set; }
+        [XmlElement("LineCode")]
+        public String LineCodeRaw { get; set; }
 
+        [XmlIgnore]
         public LineCodeType LineCode { get; set; }
 
-        [MetroElement(XmlName = "SeqNum")]
+        [XmlElement("SeqNum")]
         public int SequenceNumber { get; set; }
 
-        protected override void Process()
+        internal override void Process()
         {
             LineCode = LineCodeUtil.FromString(LineCodeRaw);
         }

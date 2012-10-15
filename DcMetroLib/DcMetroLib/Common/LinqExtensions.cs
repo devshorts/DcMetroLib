@@ -5,10 +5,8 @@ using System.Text;
 
 namespace DcMetroLib.Common
 {
-	public static class LinqExtensions
+    internal static class LinqExtensions
 	{
-		
-
 		public static IEnumerable<TAccumulated> CollectList<TSource, TAccumulated>(this IEnumerable<TSource> source, Func<TSource, IEnumerable<TAccumulated>> getListFucntion)
 		{
 			return source.Aggregate(

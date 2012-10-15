@@ -1,14 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace DcMetroLib.Common
 {
-    public static class StringUtil
+    internal static class StringUtil
     {
         public static string[] Split(string value, string separator)
         {
+            if(value == null)
+            {
+                return null;
+            }
+
             return value.Split(new[] { separator }, StringSplitOptions.RemoveEmptyEntries);
         }
     }

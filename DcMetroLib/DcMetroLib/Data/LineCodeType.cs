@@ -7,6 +7,7 @@ namespace DcMetroLib.Data
 {
     public enum LineCodeType
     {
+        Unknown,
         Red,
         Blue,
         Yellow,
@@ -34,6 +35,11 @@ namespace DcMetroLib.Data
 
         public static List<LineCodeType> FromDelimitedString(string source, string delim)
         {
+            if(source == null)
+            {
+                return new List<LineCodeType>() { LineCodeType.Unknown };
+            }
+
             return StringUtil.Split(source, ";").ToList().ConvertAll(FromString);
         }
     }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using DcMetroLib.Common;
 using DcMetroLib.Data;
+using DcMetroLib.Data.Containers;
 using DcMetroLib.Interfaces;
 
 namespace DcMetroLib.MetroService
@@ -43,14 +44,24 @@ namespace DcMetroLib.MetroService
 
         #region Outbound Calls
 
-        public Task<List<LineInfo>> GetLineInformation()
+        public Task<LinesContainer> GetLineInformation()
         {
-            return GetList<LineInfo>("Rail.svc/Lines", "Lines");
+            return Get<LinesContainer>("Rail.svc/Lines");
         }
 
-        public Task<List<RailIncidentData>> GetRailIncidents()
+        public Task<RailIncidentsContainer> GetRailIncidents()
         {
-            return GetList<RailIncidentData>("Incidents.svc/Incidents", "Incidents");
+            return Get<RailIncidentsContainer>("Incidents.svc/Incidents");
+        }
+
+        public Task<ElevatorIncidentsContainer> GetElevatorIncidents(String stationCode)
+        {
+            return GetElevatorIncidents(new StationInfo {Code = stationCode});
+        }
+
+        public Task<ElevatorIncidentsContainer> GetElevatorIncidents(StationInfo station)
+        {
+            return Get<ElevatorIncidentsContainer>("Incidents.svc/ElevatorIncidents?StationCode=" + station.Code);
         }
 
         public Task<StationInfo> GetStationInfo(string stationCode)
@@ -62,19 +73,28 @@ namespace DcMetroLib.MetroService
         {
             return Get<StationInfo>("Rail.svc/StationInfo?StationCode=" + stationCode.Code);
         }
+        
+        public Task<BusRoutesContainer> GetBusRoutes()
+        {
+            return Get<BusRoutesContainer>("Bus.svc/Routes");
+        }
 
+        public Task<BusStopsContainer> GetBusStops(double lat, double lon, int radiusInMeters)
+        {
+            return Get<BusStopsContainer>(String.Format("Bus.svc/Stops?lat={0}&lon={1}&radius={2}", lat, lon, radiusInMeters));
+        }
 
-        public Task<List<MetroPathItem>> GetStationsBetween(String fromCode, String toCode)
+        public Task<StationPathContainer> GetStationsBetween(String fromCode, String toCode)
         {
             return GetStationsBetween(new StationInfo {Code = fromCode}, new StationInfo {Code = toCode});
         }
 
-        public Task<List<MetroPathItem>> GetStationsBetween(StationInfo from, StationInfo to)
+        public Task<StationPathContainer> GetStationsBetween(StationInfo from, StationInfo to)
         {
-            return GetList<MetroPathItem>(String.Format("Rail.svc/Path?FromStationCode={0}&ToStationCode={1}", from.Code, to.Code), "Path");
+            return Get<StationPathContainer>(String.Format("Rail.svc/Path?FromStationCode={0}&ToStationCode={1}", from.Code, to.Code));
         }
 
-        public Task<List<StationInfo>> GetStationsByLine(LineCodeType lineCode)
+        public Task<StationsContainer> GetStationsByLine(LineCodeType lineCode)
         {
             string url;
 
@@ -91,18 +111,17 @@ namespace DcMetroLib.MetroService
                 url = "Rail.svc/Stations";
             }
 
-            return GetList<StationInfo>(url, "Stations");
-
+            return Get<StationsContainer>(url);
         }
 
-        public Task<List<TrainArrivalTime>> GetArrivalTimesForStations(List<StationInfo> stations)
+        public Task<TrainArrivalContainer> GetArrivalTimesForStations(List<StationInfo> stations)
         {
-            return GetList<TrainArrivalTime>("StationPrediction.svc/GetPrediction/" + stations.FoldToCommaDelimitedList(s => s.Code), "Trains");
+            return Get<TrainArrivalContainer>("StationPrediction.svc/GetPrediction/" + stations.FoldToCommaDelimitedList(s => s.Code));
         }
 
-        public Task<List<StationEntrance>> GetNearestEntrances(double lat, double lon, int radiusInMeters)
+        public Task<StationEntranceContainer> GetNearestEntrances(double lat, double lon, int radiusInMeters)
         {
-            return GetList<StationEntrance>(String.Format("Rail.svc/StationEntrances?lat={0}&lon={1}&radius={2}", lat, lon, radiusInMeters), "Entrances");
+            return Get<StationEntranceContainer>(String.Format("Rail.svc/StationEntrances?lat={0}&lon={1}&radius={2}", lat, lon, radiusInMeters));
         }
 
         #endregion
@@ -114,29 +133,15 @@ namespace DcMetroLib.MetroService
             return AppendApiKey(BaseUrl + svc);
         }
 
-        private Task<List<T>> GetList<T>(string svc, string term) where T : class, IMetroData
-        {
-            var taskSource = new TaskCompletionSource<List<T>>();
-
-            GetXmlFromUrl(GetKeyedUrl(svc)).ContinueWith(data =>
-            {
-                var items = MetroBuilder<T>.BuildList(data.Result, term);
-
-                taskSource.SetResult(items);
-            });
-
-            return taskSource.Task;
-        }
-
-        private Task<T> Get<T>(string svc) where T : class, IMetroData
+        private Task<T> Get<T>(string svc) where T : MetroDataItemBase
         {
             var taskSource = new TaskCompletionSource<T>();
 
             GetXmlFromUrl(GetKeyedUrl(svc)).ContinueWith(data =>
             {
-                var item = MetroBuilder<T>.Build(data.Result);
+                var items = MetroBuilder<T>.Build(data.Result);
 
-                taskSource.SetResult(item);
+                taskSource.SetResult(items);
             });
 
             return taskSource.Task;
@@ -202,32 +207,13 @@ namespace DcMetroLib.MetroService
         #endregion
     }
 
-    internal static class MetroBuilder<T> where T : class, IMetroData
+    internal static class MetroBuilder<T> where T : MetroDataItemBase
     {
-        public static List<T> BuildList(XDocument root, string childName)
-        {
-            if (root != null && root.Root != null)
-            {
-                XNamespace df = root.Root.Name.Namespace;
-
-                var val = (from items in root.Descendants(df + childName)
-                           from item in items.Elements()
-                           select (Activator.CreateInstance(typeof(T)) as T).Decode(item, df) as T).ToList();
-
-                return val;
-            }
-            return null;
-        }
-
         public static T Build(XDocument root)
         {
-            if (root != null && root.Root != null)
-            {
-                XNamespace df = root.Root.Name.Namespace;
-
-                return (Activator.CreateInstance(typeof (T)) as T).Decode(root.Root, df) as T;
-            }
-            return null;
+            var item = SerializationUtil.Deserialize<T>(root);
+            item.Process();
+            return item;
         }
     }
 }

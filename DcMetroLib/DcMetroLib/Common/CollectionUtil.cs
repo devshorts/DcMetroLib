@@ -6,7 +6,7 @@ using System.Text;
 
 namespace DcMetroLib.Common
 {
-    public static class CollectionUtil
+    internal static class CollectionUtil
     {
         public static Boolean IsNullOrEmpty(IList collection)
         {

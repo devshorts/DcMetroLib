@@ -1,45 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Serialization;
 using DcMetroLib.Common;
+using DcMetroLib.Data.Containers;
 
 namespace DcMetroLib.Data
 {
-    public class RailIncidentData : XmlDecoder
+    [Serializable]
+    public class RailIncidentData : MetroDataItemBase
     {
-        [MetroElement]
+        [XmlElement]
         public DateTime DateUpdated { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public String DelaySeverity { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public String Description { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public String EmergencyText { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public String EndLocationFullName { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public String IncidentID { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public String IncidentType { get; set; }
 
-        [MetroElement(XmlName = "LinesAffected")]
-        private String LinesAffectedRaw { get; set; }
+        [XmlElement(ElementName = "LinesAffected")]
+        public String LinesAffectedRaw { get; set; }
 
+        [XmlIgnore]
         public List<LineCodeType> LinesAffected { get; set; }
 
-        [MetroElement(XmlName = "PassengerDelay")]
+        [XmlElement(ElementName = "PassengerDelay")]
         public int PassengerDelayMinutes { get; set; }
 
-        [MetroElement]
+        [XmlElement]
         public string StartLocationFullName { get; set; }
 
-        protected override void Process()
+        internal override void Process()
         {
              LinesAffected = LineCodeUtil.FromDelimitedString(LinesAffectedRaw, ";");
         }
