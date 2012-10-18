@@ -138,5 +138,20 @@ namespace DcMetroLib.tests
 
             mutex.WaitOne();
         }
+
+        [Test]
+        public void GetBusScheduleByRoute()
+        {
+            MetroManager.Instance.GetBusScheduleByRoute("16L", true).ContinueWith((schedule) =>
+            {
+                Assert.IsNotEmpty(schedule.Result.Direction0Trips);
+
+                Assert.IsNotEmpty(schedule.Result.Direction1Trips);
+                
+                mutex.Set();
+            });
+
+            mutex.WaitOne();
+        }
     }
 }

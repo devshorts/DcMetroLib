@@ -79,6 +79,17 @@ namespace DcMetroLib.MetroService
             return Get<BusRoutesContainer>("Bus.svc/Routes");
         }
 
+        public Task<BusScheduleByRouteContainer> GetBusScheduleByRoute(String routeID, bool includeVariations = false)
+        {
+            return GetBusScheduleByRoute(routeID, DateTime.Now, includeVariations);
+        }
+
+        public Task<BusScheduleByRouteContainer> GetBusScheduleByRoute(String routeID, DateTime date, bool includeVariations = false)
+        {
+            return Get<BusScheduleByRouteContainer>(String.Format("Bus.svc/RouteSchedule?routeId={0}&date={1}&includingVariations={2}",
+                routeID, date.ToString("yyyy-MM-dd"), includeVariations));
+        }
+
         public Task<BusStopsContainer> GetBusStops(double lat, double lon, int radiusInMeters)
         {
             return Get<BusStopsContainer>(String.Format("Bus.svc/Stops?lat={0}&lon={1}&radius={2}", lat, lon, radiusInMeters));
