@@ -11,8 +11,8 @@ namespace DcMetroLib.Data.Containers
     public class BusStopsContainer : MetroDataItemBase
     {
         [XmlArray("Stops")]
-        [XmlArrayItem("Stop", typeof(BusStops))]
-        public List<BusStops> BusStops { get; set; }
+        [XmlArrayItem("Stop", typeof(BusStop))]
+        public List<BusStop> BusStops { get; set; }
 
         internal override void Process()
         {

@@ -153,5 +153,24 @@ namespace DcMetroLib.tests
 
             mutex.WaitOne();
         }
+
+        [Test]
+        public void GetBusRoutePositions()
+        {
+            MetroManager.Instance.GetBusRouteDetails("16L").ContinueWith((route) =>
+            {
+                Assert.IsNotEmpty(route.Result.Direction0.BusStops);
+
+                Assert.IsNotEmpty(route.Result.Direction1.BusStops);
+
+                Assert.IsNotEmpty(route.Result.Name);
+
+                Assert.AreEqual(route.Result.RouteID, "16L");
+
+                mutex.Set();
+            });
+
+            mutex.WaitOne();
+        }
     }
 }

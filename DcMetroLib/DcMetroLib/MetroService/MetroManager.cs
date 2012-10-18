@@ -90,6 +90,17 @@ namespace DcMetroLib.MetroService
                 routeID, date.ToString("yyyy-MM-dd"), includeVariations));
         }
 
+        public Task<BusRoutePositionsContainer> GetBusRouteDetails(String routeId)
+        {
+            return GetBusRouteDetails(routeId, DateTime.Now);
+        }
+
+        public Task<BusRoutePositionsContainer> GetBusRouteDetails(String routeID, DateTime date)
+        {
+            return Get<BusRoutePositionsContainer>(String.Format("Bus.svc/RouteDetails?routeId={0}&date={1}", 
+                routeID, date));
+        }
+
         public Task<BusStopsContainer> GetBusStops(double lat, double lon, int radiusInMeters)
         {
             return Get<BusStopsContainer>(String.Format("Bus.svc/Stops?lat={0}&lon={1}&radius={2}", lat, lon, radiusInMeters));
