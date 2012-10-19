@@ -19,7 +19,7 @@ namespace DcMetroLib.tests
         [Test]
         public void TestStations()
         {
-            MetroManager.Instance.GetStationsByLine(LineCodeType.Green).ContinueWith((stations) =>
+            MetroManager.Instance.GetStationsByLine(LineCodeType.Green).ContinueWith(stations =>
                                                                          {
                                                                              Assert.IsNotEmpty(stations.Result.Stations);
                                                                              mutex.Set();
@@ -31,7 +31,7 @@ namespace DcMetroLib.tests
         [Test]
         public void TestLines()
         {
-            MetroManager.Instance.GetLineInformation().ContinueWith((lines) =>
+            MetroManager.Instance.GetLineInformation().ContinueWith(lines =>
                                                          {
                                                              Assert.IsNotEmpty(lines.Result.Lines);
                                                              mutex.Set();
@@ -43,8 +43,8 @@ namespace DcMetroLib.tests
         [Test]
         public void TestArrivalTimes()
         {
-            MetroManager.Instance.GetStationsByLine(LineCodeType.Green).ContinueWith((stations) =>
-            MetroManager.Instance.GetArrivalTimesForStations (stations.Result.Stations).ContinueWith((arrivals) =>
+            MetroManager.Instance.GetStationsByLine(LineCodeType.Green).ContinueWith(stations =>
+            MetroManager.Instance.GetArrivalTimesForStations (stations.Result.Stations).ContinueWith(arrivals =>
                                 {
                                     Assert.IsNotEmpty(arrivals.Result.TrainArrivalTimes);
                                     mutex.Set();
@@ -56,7 +56,7 @@ namespace DcMetroLib.tests
         [Test]
         public void TestRailIncidents()
         {
-            MetroManager.Instance.GetRailIncidents().ContinueWith((incidents) =>
+            MetroManager.Instance.GetRailIncidents().ContinueWith(incidents =>
             {
                 Assert.IsNotNull(incidents.Result.RailIncidents);
                 mutex.Set();
@@ -68,7 +68,7 @@ namespace DcMetroLib.tests
         [Test]
         public void TestElevatorIncidents()
         {
-            MetroManager.Instance.GetElevatorIncidents("A10").ContinueWith((incidents) =>
+            MetroManager.Instance.GetElevatorIncidents("A10").ContinueWith(incidents =>
             {
                 Assert.IsNotNull(incidents.Result.ElevatorIncidents);
                 mutex.Set();
@@ -81,7 +81,7 @@ namespace DcMetroLib.tests
         [Test]
         public void GetNearestStations()
         {
-            MetroManager.Instance.GetNearestEntrances(38.878586, -76.989626, 500).ContinueWith((stationEntrances) =>
+            MetroManager.Instance.GetNearestEntrances(38.878586, -76.989626, 500).ContinueWith(stationEntrances =>
             {
                 Assert.IsNotEmpty(stationEntrances.Result.StationEntrances);
                 mutex.Set();
@@ -93,7 +93,7 @@ namespace DcMetroLib.tests
         [Test]
         public void GetStationInfo()
         {
-            MetroManager.Instance.GetStationInfo("A10").ContinueWith((stationInfo) =>
+            MetroManager.Instance.GetStationInfo("A10").ContinueWith(stationInfo =>
             {
                 Assert.IsNotNull(stationInfo.Result);
                 mutex.Set();
@@ -105,7 +105,7 @@ namespace DcMetroLib.tests
         [Test]
         public void GetStationsBetween()
         {
-            MetroManager.Instance.GetStationsBetween("A10", "A12").ContinueWith((stationList) =>
+            MetroManager.Instance.GetStationsBetween("A10", "A12").ContinueWith(stationList =>
             {
                 Assert.IsNotEmpty(stationList.Result.MetroPathItems);
                 Assert.IsTrue(stationList.Result.MetroPathItems.Count == 3);
@@ -118,7 +118,7 @@ namespace DcMetroLib.tests
         [Test]
         public void GetBusRoutes()
         {
-            MetroManager.Instance.GetBusRoutes().ContinueWith((routes) =>
+            MetroManager.Instance.GetBusRoutes().ContinueWith(routes =>
             {
                 Assert.IsNotEmpty(routes.Result.BusRoutes);
                 mutex.Set();
@@ -130,7 +130,7 @@ namespace DcMetroLib.tests
         [Test]
         public void GetBusStops()
         {
-            MetroManager.Instance.GetBusStops(38.878586, -76.989626, 500).ContinueWith((stops) =>
+            MetroManager.Instance.GetBusStops(38.878586, -76.989626, 500).ContinueWith(stops =>
             {
                 Assert.IsNotEmpty(stops.Result.BusStops);
                 mutex.Set();
@@ -142,7 +142,7 @@ namespace DcMetroLib.tests
         [Test]
         public void GetBusScheduleByRoute()
         {
-            MetroManager.Instance.GetBusScheduleByRoute("16L", true).ContinueWith((schedule) =>
+            MetroManager.Instance.GetBusScheduleByRoute("16L", true).ContinueWith(schedule =>
             {
                 Assert.IsNotEmpty(schedule.Result.Direction0Trips);
 
@@ -157,7 +157,7 @@ namespace DcMetroLib.tests
         [Test]
         public void GetBusRoutePositions()
         {
-            MetroManager.Instance.GetBusRouteDetails("16L").ContinueWith((route) =>
+            MetroManager.Instance.GetBusRouteDetails("16L").ContinueWith(route =>
             {
                 Assert.IsNotEmpty(route.Result.Direction0.BusStops);
 
@@ -176,7 +176,7 @@ namespace DcMetroLib.tests
         [Test]
         public void GetBusPositions()
         {
-            MetroManager.Instance.GetBusPositions("10A", 38.878586, -76.989626, 50000, true).ContinueWith((route) =>
+            MetroManager.Instance.GetBusPositions("10A", 38.878586, -76.989626, 50000, true).ContinueWith(route =>
             {
                 Assert.IsNotEmpty(route.Result.BusPositions);
 
