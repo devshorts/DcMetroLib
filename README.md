@@ -13,8 +13,8 @@ DcMetroLib is a complete C# library for querying the DC metro.  All the availabl
 - **GetNearestEntrances** - Returns entrances to Metro stations.
 - **GetBusRoutes** - Returns the list of all bus routes.
 - **GetBusStops** - Returns the list of all bus stops.
-- **GetBusRouteDetails** - Returns schedule for the route.
-- **GetBusPositions** - Returns shape of the route (locations the bus is going through) and its bus stops.
+- **GetBusScheduleByRoute** - Returns schedule for the route.
+- **GetBusRouteDetails** - Returns shape of the route (locations the bus is going through) and its bus stops.
 - **GetBusPositions** - Returns real time bus positions.
 - **GetBusStopSchedule** - Returns schedule for the stop.
 - **GetArrivalsForBusStop** - Returns the bus arrival predictions for a specific bus stop according to the real-time positions of the buses. 
