@@ -116,6 +116,23 @@ namespace DcMetroLib.MetroService
             return Get<StationPathContainer>(String.Format("Rail.svc/Path?FromStationCode={0}&ToStationCode={1}", from.Code, to.Code));
         }
 
+        public Task<BusPositionsContainer> GetAllBusPositions(double lat, double lon, int radiusInMeters, bool includeVariations = false)
+        {
+            return GetBusPositions(null, lat, lon, radiusInMeters, includeVariations);
+        }
+
+        public Task<BusPositionsContainer> GetBusPositions(string routeID, double lat, double lon, int radiusInMeters, bool includeVariations = false)
+        {
+            var url = String.Format("Bus.svc/BusPositions?{0}includingVariations={1}&lat={2}&lon={3}&radius={4}",
+                          String.IsNullOrEmpty(routeID) ? String.Empty : String.Format("routeId={0}&", routeID),
+                          includeVariations,
+                          lat,
+                          lon,
+                          radiusInMeters);
+
+            return Get<BusPositionsContainer>(url);
+        }
+
         public Task<StationsContainer> GetStationsByLine(LineCodeType lineCode)
         {
             string url;

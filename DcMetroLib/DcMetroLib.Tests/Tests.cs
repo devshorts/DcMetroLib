@@ -172,5 +172,18 @@ namespace DcMetroLib.tests
 
             mutex.WaitOne();
         }
+
+        [Test]
+        public void GetBusPositions()
+        {
+            MetroManager.Instance.GetBusPositions("10A", 38.878586, -76.989626, 50000, true).ContinueWith((route) =>
+            {
+                Assert.IsNotEmpty(route.Result.BusPositions);
+
+                mutex.Set();
+            });
+
+            mutex.WaitOne();
+        }
     }
 }
