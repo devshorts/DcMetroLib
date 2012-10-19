@@ -132,6 +132,11 @@ namespace DcMetroLib.MetroService
             return Get<StationPathContainer>(String.Format("Rail.svc/Path?FromStationCode={0}&ToStationCode={1}", from.Code, to.Code));
         }
 
+        public Task<BusStopPredictionContainer> GetArrivalsForBusStop(string stopID)
+        {
+            return Get<BusStopPredictionContainer>("NextBusService.svc/Predictions?StopID=" + stopID);
+        }
+
         public Task<BusPositionsContainer> GetAllBusPositions(double lat, double lon, int radiusInMeters, bool includeVariations = false)
         {
             return GetBusPositions(null, lat, lon, radiusInMeters, includeVariations);

@@ -45,6 +45,7 @@
     <Compile Include="Common\SerializationUtil.cs" />
     <Compile Include="Common\StringUtil.cs" />
     <Compile Include="Data\BusPosition.cs" />
+    <Compile Include="Data\BusPrediction.cs" />
     <Compile Include="Data\BusRoute.cs" />
     <Compile Include="Data\BusRouteDetails.cs" />
     <Compile Include="Data\BusStop.cs" />
@@ -52,6 +53,7 @@
     <Compile Include="Data\Containers\BusPositionsContainer.cs" />
     <Compile Include="Data\Containers\BusRoutePositionsContainer.cs" />
     <Compile Include="Data\Containers\BusScheduleByRouteContainer.cs" />
+    <Compile Include="Data\Containers\BusStopPredictionContainer.cs" />
     <Compile Include="Data\Containers\BusStopScheduleContainer.cs" />
     <Compile Include="Data\Containers\BusStopsContainer.cs" />
     <Compile Include="Data\BusTrip.cs" />

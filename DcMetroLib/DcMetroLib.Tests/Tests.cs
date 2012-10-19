@@ -186,18 +186,33 @@ namespace DcMetroLib.tests
             mutex.WaitOne();
         }
 
-         [Test]
+        [Test]
         public void GetBusStopSchedule()
         {
-            MetroManager.Instance.GetBusStopSchedule("2000019").ContinueWith(route =>
+            MetroManager.Instance.GetBusStopSchedule("2000019").ContinueWith(busStop =>
             {
-                Assert.IsNotEmpty(route.Result.ScheduledArrivals);
+                Assert.IsNotEmpty(busStop.Result.ScheduledArrivals);
 
                 mutex.Set();
             });
 
             mutex.WaitOne();
         }
+
+        [Test]
+        public void GetBusPrediction()
+        {
+            MetroManager.Instance.GetArrivalsForBusStop("1001888").ContinueWith(busStop =>
+            {
+                Assert.IsNotEmpty(busStop.Result.BusPredictions);
+
+                mutex.Set();
+            });
+
+            mutex.WaitOne();
+        }
+
+
 
         
     }
