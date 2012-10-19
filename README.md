@@ -1,7 +1,7 @@
 DcMetroLib
 ==========
-
-A C# library for querying the DC metro.  Metro API calls are fully implemented. Raw XML queries are mapped to typed objects. All queries are returned as asynch tasks.
+          
+DcMetroLib is a complete C# library for querying the DC metro.  All the available Metro API are implemented. Raw XML queries are mapped to typed objects. All queries are returned as asynch tasks.  Each data object exposes a way to convert stringly typed data to strongly typed data, so you can query lines using Line enumerations, etc.  For raw docs check the metro api documentation here: http://developer.wmata.com/docs/read/Home
 
 - **GetStationsByLine** -  Returns Metro lines.
 - **GetLineInformation** - Returns the list of Metro stations.
