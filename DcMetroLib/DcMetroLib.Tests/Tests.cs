@@ -185,5 +185,20 @@ namespace DcMetroLib.tests
 
             mutex.WaitOne();
         }
+
+         [Test]
+        public void GetBusStopSchedule()
+        {
+            MetroManager.Instance.GetBusStopSchedule("2000019").ContinueWith(route =>
+            {
+                Assert.IsNotEmpty(route.Result.ScheduledArrivals);
+
+                mutex.Set();
+            });
+
+            mutex.WaitOne();
+        }
+
+        
     }
 }

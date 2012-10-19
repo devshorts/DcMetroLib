@@ -87,7 +87,7 @@ namespace DcMetroLib.MetroService
         public Task<BusScheduleByRouteContainer> GetBusScheduleByRoute(String routeID, DateTime date, bool includeVariations = false)
         {
             return Get<BusScheduleByRouteContainer>(String.Format("Bus.svc/RouteSchedule?routeId={0}&date={1}&includingVariations={2}",
-                routeID, date.ToString("yyyy-MM-dd"), includeVariations));
+                routeID, FormatDate(date), includeVariations));
         }
 
         public Task<BusRoutePositionsContainer> GetBusRouteDetails(String routeId)
@@ -98,7 +98,7 @@ namespace DcMetroLib.MetroService
         public Task<BusRoutePositionsContainer> GetBusRouteDetails(String routeID, DateTime date)
         {
             return Get<BusRoutePositionsContainer>(String.Format("Bus.svc/RouteDetails?routeId={0}&date={1}", 
-                routeID, date));
+                routeID, FormatDate(date)));
         }
 
         public Task<BusStopsContainer> GetBusStops(double lat, double lon, int radiusInMeters)
@@ -109,6 +109,22 @@ namespace DcMetroLib.MetroService
         public Task<StationPathContainer> GetStationsBetween(String fromCode, String toCode)
         {
             return GetStationsBetween(new StationInfo {Code = fromCode}, new StationInfo {Code = toCode});
+        }
+
+        public Task<BusStopScheduleContainer> GetBusStopSchedule(String stopID)
+        {
+            return GetBusStopSchedule(stopID, DateTime.Now);
+        }
+
+        public Task<BusStopScheduleContainer> GetBusStopSchedule(String stopID, DateTime date)
+        {
+            return Get<BusStopScheduleContainer>(String.Format("Bus.svc/StopSchedule?stopId={0}&date={1}", stopID,
+                                                            FormatDate(date)));
+        }
+
+        private string FormatDate(DateTime date)
+        {
+            return date.ToString("yyyy-MM-dd");
         }
 
         public Task<StationPathContainer> GetStationsBetween(StationInfo from, StationInfo to)

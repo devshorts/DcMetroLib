@@ -35,5 +35,7 @@ MetroManager.Instance.GetBusScheduleByRoute("16L", true).ContinueWith(schedule =
 MetroManager.Instance.GetBusRouteDetails("16L").ContinueWith(route => { });
 
 MetroManager.Instance.GetBusPositions("10A", 38.878586, -76.989626, 50000, true).ContinueWith(route => { });                                   
+
+MetroManager.Instance.GetBusStopSchedule("2000019").ContinueWith(route => { });
                                                                          
 ```                                                                         

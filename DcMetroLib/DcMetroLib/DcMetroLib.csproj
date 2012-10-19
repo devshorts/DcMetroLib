@@ -52,6 +52,7 @@
     <Compile Include="Data\Containers\BusPositionsContainer.cs" />
     <Compile Include="Data\Containers\BusRoutePositionsContainer.cs" />
     <Compile Include="Data\Containers\BusScheduleByRouteContainer.cs" />
+    <Compile Include="Data\Containers\BusStopScheduleContainer.cs" />
     <Compile Include="Data\Containers\BusStopsContainer.cs" />
     <Compile Include="Data\BusTrip.cs" />
     <Compile Include="Data\Containers\ElevatorIncidentsContainer.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="Data\RailIncidentData.cs" />
     <Compile Include="Data\LineCodeType.cs" />
     <Compile Include="Data\MetroPathItem.cs" />
+    <Compile Include="Data\StopScheduleArrival.cs" />
     <Compile Include="Interfaces\IMetroData.cs" />
     <Compile Include="Data\LineInfo.cs" />
     <Compile Include="Data\MetroElement.cs" />
